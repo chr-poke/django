@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Accesarea {{id}} </title>
+        <link rel="stylesheet" href="{% static 'css/stil.css' %}">
+    </head>
+    <body>
+        <section id="cereri_default">
+            <h1> Accesarea {{id}} </h1>
+            <div class="cerere">
+                url: {{ cerere.0 }} <br>
+                pagina: {{ cerere.1 }} <br>
+                data: {{ cerere.2 }} <br>
+                param: {{ cerere.3 }} <br>
+                id: {{ cerere.4 }} <br>
+                ip: {{ cerere.5 }}
+            </div>
+        </section>
+    </body>
+</html>

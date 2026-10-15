@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Cereri </title>
+        <link rel="stylesheet" href="{% static 'css/stil.css' %}">
+    </head>
+    <body>
+        <h1> Cereri </h1>       
+        <section id="erori">
+            {% if "ultimele" in sect and ult > total %}
+                <p class="eroare">
+                    EROARE: Exista doar {{total}} accesari fata de {{ult}} accesari cerute.
+                </p> 
+            {% endif %}
+            {% if "err_ult" in sect %}
+                <p class="eroare">
+                    EROARE: Parametrul 'ultimele' accepta doar valori numerice intregi.
+                </p>
+            {% endif %}
+        </section>
+        {% if "err_ult" not in sect and "tabel" not in sect %}
+            <section id="cereri_default">
+                <div class="box">
+                    {% for cerere in lista_cereri %}
+                        <div class="cerere">
+                            url: {{ cerere.0 }} <br>
+                            pagina: {{ cerere.1 }} <br>
+                            data: {{ cerere.2 }} <br>
+                            param: {{ cerere.3 }} <br>
+                            id: {{ cerere.4 }} <br>
+                            ip: {{ cerere.5 }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+        {% if "err_ult" not in sect and "tabel" in sect %}
+            <table>
+                <tr>
+                    {% if "url" in table_headers %}
+                        <th> url </th>
+                    {% endif %}
+                    {% if "pagina" in table_headers %}
+                        <th> pagina </th>
+                    {% endif %}
+                    {% if "data" in table_headers %}
+                        <th> data </th>
+                    {% endif %}
+                    {% if "param" in table_headers %}
+                        <th> param </th>
+                    {% endif %}
+                    {% if "id" in table_headers %}
+                        <th> id </th>
+                    {% endif %}
+                    {% if "ip" in table_headers %}
+                        <th> ip </th>
+                    {% endif %}
+                </tr>
+                {% for cerere in lista_cereri %}
+                    <tr>
+                        {% if "url" in table_headers %}
+                            <td> {{cerere.0}} </td>
+                        {% endif %}
+                        {% if "pagina" in table_headers %}
+                            <td> {{cerere.1}} </td>
+                        {% endif %}
+                        {% if "data" in table_headers %}
+                            <td> {{cerere.2}} </td>
+                        {% endif %}
+                        {% if "param" in table_headers %}
+                            <td> {{cerere.3}} </td>
+                        {% endif %}
+                        {% if "id" in table_headers %}
+                            <td> {{cerere.4}} </td>
+                        {% endif %}
+                        {% if "ip" in table_headers %}
+                            <td> {{cerere.5}} </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        {% if "acc_detalii" in sect %}
+            <section id="cereri_detalii">
+                <div class="box">
+                    {% for d in data %}
+                        <ul class="cerere">
+                            <li> Data: {{d.0}} </li>
+                            <li> Ora: {{d.1}} </li>
+                        </ul>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+        <section id="parametri">
+            <h2> Parametri </h2>
+            <p> Numar: {{nr_param}} </p>
+            {% if nr_param > 1 %}
+                <p> Acestia sunt: {{lista_param}}. </p>
+            {% endif %}
+            {% if nr_param == 1 %}
+                <p> Acesta este: {{lista_param}}. </p>
+            {% endif %}
+        </section>
+        <section id="extra">
+            <h2> Extra </h2>
+            {% if "acc_nr" in sect %}
+                <p> Numar de accesari: {{total}} </p>
+            {% endif %}
+            <p> Pagina cu cele mai putine accesari: {{pag_min}} </p>
+            <p> Pagina cu cele mai multe accesari: {{pag_max}} </p>
+        </section>
+    </body>
+</html>
