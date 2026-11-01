@@ -7,5 +7,6 @@ urlpatterns = [
     path("log", views.log, name="log"),
     path("istoric", views.istoric, name="istoric"),
     path("despre", views.despre, name="despre"),
+    path("ambalaje", views.ambalaje, name="ambalaje"),
     re_path(r"^accesare(?P<id>\d+)/?$", views.accesare, name="accesare")
 ]

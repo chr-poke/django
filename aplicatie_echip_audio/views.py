@@ -195,3 +195,27 @@ def accesare(request, id):
         return HttpResponse(f"""
             Accesarea nu exista.
         """)
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import Ambalaj
+
+def ambalaje(request):
+    
+    nrPagina=request.GET.get("pagina", 1)
+    # veti trata situatia in care nu e dat un numar intreg
+    produse=Ambalaj.objects.all()
+    paginator = Paginator(produse, 3)
+    mesajEroare=None
+    try:
+        obPagina = paginator.page(nrPagina)
+    except EmptyPage:
+        obPagina=None
+        mesajEroare = "Nu mai sunt produse"
+    except PageNotAnInteger:
+        obPagina=None
+        mesajEroare = "Parametrul 'paging' trebuie sa aiba o valoare numerica"
+    return render(request, 'ambalaje.html',
+                    {
+                        'pagina': obPagina,
+                        'eroare': mesajEroare
+                    })
