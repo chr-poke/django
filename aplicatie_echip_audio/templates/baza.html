@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atomic+Age&family=Glory:ital,wght@0,100..800;1,100..800&display=swap">
+        <link rel="stylesheet" href="{% static 'css/stil.css' %}">
+        {% block titlu %} <title> Titlu </title> {% endblock %}
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href={%url 'index'%} id="logo" class="menu_item">Audino</a>
+                <div id="header_links">
+                    <a href={%url 'produse'%} class="menu_item">Produse</a>
+                    <a href={%url 'istoric'%} class="menu_item">Istoric</a>
+                    <div class="submenu" id="subm_despre">
+                        <div class="menu_item">Despre</div>
+                        <div class="submenu_content">
+                            <a href={%url 'intro'%}>Introducere</a>
+                            <a href="https://docs.google.com/document/d/1mcMMI7WofF03Us0Zp1gHcfr5_rkkQgBl1QJ7GQWsQv0/edit?usp=sharing">Documentație</a>
+                        </div>
+                    </div>
+                    <a href={%url 'contact'%} class="menu_item">Contact</a>
+                    <a href={%url 'cos'%} id="cos" class="menu_item">Coș</a>
+                </div>
+            </nav>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer>
+            <div id="date_contact">
+                <p> Telefon: <a href="tel:{{tel}}">{{ tel }}</a> </p>
+                <p> Email: <a href="mailto:{{email}}">{{ email }}</a> </p>
+                <p> Urmăriți-ne pe <a href="{{facebook}}">Facebook</a> </p>
+            </div>
+            <div id="ip"> <p> $_IP_$ </p> </div>
+            <div id="detalii_firma">
+                <p> © {{ nume_firma }} SRL </p>
+                <p> Înființat în {{ an_infiintare }} </p>
+                <p> Adresă: {{ adresa }} </p>
+            </div>
+        </footer>
+    </body>
+</html>

@@ -1,11 +1,9 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <title> Accesarea {{id}} </title>
-        <link rel="stylesheet" href="{% static 'css/stil.css' %}">
-    </head>
-    <body>
+{% extends "baza.html" %}
+{% block titlu %} <title> Accesarea {{id}} </title> {% endblock %}
+{% block content %}
+    {% if err %}
+        <p class="eroare"> Accesarea nu există. </p>
+    {% else %}
         <section id="cereri_default">
             <h1> Accesarea {{id}} </h1>
             <div class="cerere">
@@ -17,5 +15,5 @@
                 ip: {{ cerere.5 }}
             </div>
         </section>
-    </body>
-</html>
+    {% endif %}
+{% endblock %}

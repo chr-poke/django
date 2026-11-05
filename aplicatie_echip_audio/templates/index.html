@@ -1,0 +1,21 @@
+{% extends "baza.html" %}
+{% load static %}
+{% block titlu %} <title> Pagina principală </title> {% endblock %}
+{% block content %}
+    <section>
+        <p> Acesta este un magazin de echipamente audio. (amplificatoare, boxe, căști, etc.) </p>
+        <img src={%static 'imagini/showroom.jpg'%}>
+    </section>
+    <section id="vizitate">
+        <h1> Cele mai vizitate </h1>
+        <p> Aici va apărea o selecție de produse populare. </p>
+    </section>
+    <section id="lichidari">
+        <h1> Lichidări de stoc </h1>
+        <p> Aici va apărea o selecție de produse în stoc limitat. </p>
+    </section>
+    <section id="articole">
+        <h1> Articole </h1>
+        <p> Aici vor apărea câteva review-uri și alte articole de blog. </p>
+    </section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "baza.html" %}
+{% load static %}
+{% block titlu %} <title> Despre noi </title> {% endblock %}
+{% block content %}
+    <h1> Despre noi </h1>
+    <p>
+        Audino este paradisul oricărui audiofil.
+        Te așteptăm în showroom să testezi căștile din oferta noastră!
+    </p>
+    <img src={% static 'imagini/casti.webp' %}>
+{% endblock %}

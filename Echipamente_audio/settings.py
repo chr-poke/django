@@ -37,7 +37,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'aplicatie_echip_audio.middleware.Middleware',
+    'aplicatie_echip_audio.middleware.Accesare',
 ]
 
 ROOT_URLCONF = 'Echipamente_audio.urls'
@@ -52,6 +52,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'aplicatie_echip_audio.ctx_proc.date_firma',
             ],
         },
     },

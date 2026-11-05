@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="ro">
-    <head>
-        <title>Ambalaje</title>
-    </head>
-    <body>
-        <h1>Afisaj</h1>
-        {% if eroare %}
-            <p> {{eroare}} </p>
+{% extends "baza.html" %}
+{% block titlu %} <title> Ambalaje </title> {% endblock %}
+{% block content %}
+        <h1> Afișaj </h1>
+        {% if err %}
+            <p class="eroare"> {{err}} </p>
         {% endif %}
         <span>
             Pagina {{ pagina.number }} din {{ pagina.paginator.num_pages }}.
@@ -20,5 +17,4 @@
         {% if pagina.has_next %}
             <a href="?pagina={{ pagina.next_page_number }}">Următor »</a>
         {% endif %}      
-    </body>
-</html>
+{% endblock %}

@@ -3,74 +3,28 @@ from django.http import HttpResponse
 from . import middleware as mw
 import re
 
-def get_ip(request):
-    
-    req_headers = request.META
-    str_lista_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    if str_lista_ip:
-        return str_lista_ip.split(',')[-1].strip()
-    else:
-        return request.META.get('REMOTE_ADDR')
-
 def index(request):
+    return render(request, "index.html")
     
-    accesare = mw.Accesare(
-        ip_client=get_ip(request),
-        url=request.path,
-        param=request.GET.dict()
-    )
-    print(accesare)
-    
-    return HttpResponse(f"""
-        Bine ați venit pe site-ul nostru!
-    """)
+def wip(request):
+    return render(request, "in_lucru.html")
 
 def info(request):
+    return render(request, "info.html", {
+        "data": mw.Accesare.calculeaza_data(request, request.param.get('data'))
+    })
     
-    accesare = mw.Accesare(
-        ip_client = get_ip(request),
-        url = request.path,
-        param = request.GET.dict()
-    )
-    print(accesare)
-    
-    return HttpResponse(f"""
-        <html>
-            <head>
-                <title> Informatii despre server </title>
-            </head>
-            <body>
-                <h1> Informatii despre server </h1>
-                <section>
-                    <h2> Data și ora </h2>
-                    <p>
-                        {accesare.calculeaza_data(accesare.param.get('data'))}
-                    </p>
-                </section>
-            </body>
-        </html>
-    """)
+def intro(request):
+    return render(request, "intro.html")
 
-def log(request):
-    
-    param_comb = {}
-    for cheie, lista_valori in request.GET.lists():
-        param_comb[cheie] = ",".join(lista_valori)
-    
-    accesare = mw.Accesare(
-        ip_client=get_ip(request),
-        url=request.path,
-        param=param_comb
-    )
-    print(accesare)
-    
-    cereri = accesare.lista_cereri()
+def log(request):    
+    cereri = mw.Accesare.lista_cereri(request)
     ult = None
-    total = accesare.nr_cereri()
+    total = mw.Accesare.nr_cereri(request)
     sect = []
     iduri = []
-    nr_param = len(accesare.lista_parametri())
-    lista_param = ", ".join(list(a for (a, b) in accesare.lista_parametri()))
+    nr_param = len(mw.Accesare.lista_parametri(request))
+    lista_param = ", ".join(list(a for (a, b) in mw.Accesare.lista_parametri(request)))
     table_headers = []
     
     acc_min = None
@@ -88,7 +42,7 @@ def log(request):
     
     p_ult = None
     p_iduri = None
-    for elem in accesare.lista_parametri():
+    for elem in mw.Accesare.lista_parametri(request):
         if elem[0] == "ultimele":
             p_ult = elem
         if elem[0] == "iduri":
@@ -105,28 +59,32 @@ def log(request):
                 
     if p_iduri is not None:
         iduri = list(map(int, p_iduri[1].split(',')))
-        if ("dubluri", "True") not in accesare.lista_parametri():
-            iduri = set(iduri)
+        if ("dubluri", "True") not in mw.Accesare.lista_parametri(request):
+            aux = iduri
+            iduri = []
+            for id in aux:
+                if id not in iduri:
+                    iduri.append(id)
         aux = []
-        cereri_og = accesare.lista_cereri()
+        cereri_og = mw.Accesare.lista_cereri(request)
         for id in iduri:
             if id <= total and cereri_og[id - 1] in cereri:
                 aux.append(cereri_og[id - 1])
         cereri = aux
             
-    if ("accesari", "nr") in accesare.lista_parametri():
+    if ("accesari", "nr") in mw.Accesare.lista_parametri(request):
         sect.append("acc_nr")
     
     data = [c[2].split(",") for c in cereri]
-    if ("accesari", "detalii") in accesare.lista_parametri():
+    if ("accesari", "detalii") in mw.Accesare.lista_parametri(request):
         sect.append("acc_detalii")
     
-    if ("tabel", "tot") in accesare.lista_parametri():
+    if ("tabel", "tot") in mw.Accesare.lista_parametri(request):
         sect.append("tabel")
         table_headers = ["url", "pagina", "data", "param", "id", "ip"]
     else:    
         p_tabel = None
-        for elem in accesare.lista_parametri():
+        for elem in mw.Accesare.lista_parametri(request):
             if elem[0] == "tabel":
                 p_tabel = elem
         if p_tabel is not None:
@@ -146,55 +104,21 @@ def log(request):
         "pag_min": p_min,
         "pag_max": p_max
     })
-    
-def istoric(request):
-    
-    accesare = mw.Accesare(
-        ip_client=get_ip(request),
-        url=request.path,
-        param=request.GET.dict()
-    )
-    print(accesare)
-    
-    return HttpResponse(f"""
-        Aceasta este pagina pentru istoric.
-    """)
 
-def despre(request):
-    
-    accesare = mw.Accesare(
-        ip_client=get_ip(request),
-        url=request.path,
-        param=request.GET.dict()
-    )
-    print(accesare)
-    
-    return HttpResponse(f"""
-        Acesta este un magazin de echipamente audio
-        (amplificatoare, boxe, casti, etc.)
-    """)
-    
 def accesare(request, id):
-    
-    accesare = mw.Accesare(
-        ip_client=get_ip(request),
-        url=request.path,
-        param=request.GET.dict()
-    )
-    print(accesare)
-    
-    cereri = accesare.lista_cereri()
+    cereri = mw.Accesare.lista_cereri(request)
     nr_id = int(id)
     
     if nr_id >= 1 and nr_id <= len(cereri):
         return render(request, "accesare.html", {
             "cerere": cereri[nr_id - 1],
-            "id": nr_id
+            "id": nr_id,
+            "err": None
         })
     else:
-        return HttpResponse(f"""
-            Accesarea nu exista.
-        """)
+        return render(request, "accesare.html", {
+            "err": "nu exista"
+        })
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Ambalaj
@@ -210,12 +134,11 @@ def ambalaje(request):
         obPagina = paginator.page(nrPagina)
     except EmptyPage:
         obPagina=None
-        mesajEroare = "Nu mai sunt produse"
+        mesajEroare = "Nu mai sunt produse."
     except PageNotAnInteger:
         obPagina=None
-        mesajEroare = "Parametrul 'paging' trebuie sa aiba o valoare numerica"
-    return render(request, 'ambalaje.html',
-                    {
-                        'pagina': obPagina,
-                        'eroare': mesajEroare
-                    })
+        mesajEroare = "Parametrul 'paging' trebuie să aibă o valoare numerică."
+    return render(request, 'ambalaje.html', {
+        'pagina': obPagina,
+        'err': mesajEroare
+    })
