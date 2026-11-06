@@ -10,6 +10,5 @@ urlpatterns = [
     path("contact", views.wip, name="contact"),
     path("info", views.info, name="info"),
     path("log", views.log, name="log"),
-    path("ambalaje", views.ambalaje, name="ambalaje"),
     re_path(r"^accesare(?P<id>\d+)/?$", views.accesare, name="accesare")
 ]
