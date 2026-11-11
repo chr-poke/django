@@ -4,9 +4,6 @@ from django.db import models
 class Brand(models.Model):
     class Meta:
         ordering = ["nume"]
-        indexes = [
-            models.Index(fields=["tara_origine"], name="index_tara_origine"),
-        ]
         verbose_name_plural = "Branduri"
     
     nume = models.CharField(
@@ -14,7 +11,6 @@ class Brand(models.Model):
         unique=True,
         error_messages={"unique": "Acest brand există deja în baza de date!"}
     )
-    tara_origine = models.CharField(max_length=100)
     site_web = models.URLField(max_length=200, blank=True, null=True)
     logo = models.ImageField(upload_to="brand_logos/")
 
@@ -33,11 +29,6 @@ class Categorie(models.Model):
         ]
         verbose_name_plural = "Categorii"
 
-    class NivelExpertiza(models.TextChoices):
-        INCEPATOR = "IN", "Începător"
-        INTERMEDIAR = "IT", "Intermediar"
-        AUDIOFIL = "AU", "Audiofil"
-
     nume = models.CharField(
         max_length=100,
         unique=True,
@@ -54,14 +45,27 @@ class Categorie(models.Model):
         }
     )
     sigla = models.ImageField(upload_to="categorii_sigle/")
-    nivel_expertiza = models.CharField(
-        max_length=2,
-        choices=NivelExpertiza.choices,
-        default=NivelExpertiza.INCEPATOR,
-    )
+    
 
     def __str__(self):
         return self.nume
+
+
+class Subcategorie(models.Model):
+    class Meta:
+        verbose_name_plural = "Subcategorii"
+        
+    nume = models.CharField(
+            max_length=100,
+            unique=True,
+            error_messages={"unique": "Această subcategorie există deja în baza de date!"}
+        )
+    descriere = models.TextField(null=True, blank=True)
+    
+    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, related_name="subcategorii")
+
+    def __str__(self):
+        return f"{self.categorie.nume} > {self.nume}"
 
 
 class ServiciuAditional(models.Model):
@@ -77,7 +81,7 @@ class ServiciuAditional(models.Model):
     
     nume = models.CharField(max_length=100)
     cost = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    descriere_serviciu = models.TextField(null=True, blank=True)
+    descriere = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.nume
@@ -103,26 +107,17 @@ class Produs(models.Model):
             )
         ]
         verbose_name_plural = "Produse"
-    
-    class TipConexiune(models.TextChoices):
-        CABLU = "C", "Cablu"
-        BLUETOOTH = "B", "Bluetooth"
-        AMBELE = "A", "Ambele"
 
     model = models.CharField(max_length=150)
     pret = models.DecimalField(max_digits=12, decimal_places=2, help_text="Prețul de vânzare în RON")
     reducere = models.PositiveIntegerField(default=0, blank=True, help_text="Procent de reducere (0-100)")
     in_showroom = models.BooleanField(default=False, blank=True)
     data_adaugare = models.DateField(auto_now_add=True)
-    tip_conexiune = models.CharField(
-        max_length=1,
-        choices=TipConexiune.choices,
-        default=TipConexiune.CABLU,
-    )
-    specificatii_tehnice = models.JSONField(default=list, blank=True)
+    specificatii_tehnice = models.JSONField(default=dict, blank=True, help_text='ex: {"Greutate": "232g", "ANC": true}')
+    descriere = models.TextField(null=True, blank=True)
 
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="produse")
-    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, related_name="produse")
+    subcategorie = models.ManyToManyField(Subcategorie, related_name="produse")
     servicii = models.ManyToManyField(ServiciuAditional, related_name="produse", blank=True)
 
     def __str__(self):
@@ -144,7 +139,6 @@ class VariantaCuloare(models.Model):
         ]
         verbose_name_plural = "Variante Culoare"
     
-    produs = models.ForeignKey(Produs, on_delete=models.CASCADE, related_name="variante_culoare")
     culoare = models.CharField(
         max_length=7, 
         help_text="Cod HEX, ex: #FF0000",
@@ -152,6 +146,8 @@ class VariantaCuloare(models.Model):
     )
     nume_culoare = models.CharField(max_length=50)
     stoc = models.PositiveIntegerField(default=0)
+    
+    produs = models.ForeignKey(Produs, on_delete=models.CASCADE, related_name="variante_culoare")
 
     def __str__(self):
         return f"{self.produs.model} - {self.nume_culoare}"
@@ -171,6 +167,7 @@ class ArticolBlog(models.Model):
     )
     continut = models.TextField()
     data_publicare = models.DateTimeField(auto_now_add=True)
+    
     produse_mentionate = models.ManyToManyField(Produs, related_name="articole", blank=True)
 
     def __str__(self):
