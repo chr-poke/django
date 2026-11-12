@@ -144,13 +144,13 @@ class VariantaCuloare(models.Model):
         help_text="Cod HEX, ex: #FF0000",
         error_messages={"max_length": "Codul HEX trebuie să aibă exact 7 caractere."}
     )
-    nume_culoare = models.CharField(max_length=50)
+    nume = models.CharField(max_length=50)
     stoc = models.PositiveIntegerField(default=0)
     
     produs = models.ForeignKey(Produs, on_delete=models.CASCADE, related_name="variante_culoare")
 
     def __str__(self):
-        return f"{self.produs.model} - {self.nume_culoare}"
+        return f"{self.produs.model} - {self.nume}"
 
 
 class ArticolBlog(models.Model):

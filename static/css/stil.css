@@ -1,3 +1,15 @@
+@font-face
+{
+    font-family: atomic;
+    src: url(/static/fonts/AtomicAge-Regular.ttf);
+}
+
+@font-face
+{
+    font-family: glory;
+    src: url(/static/fonts/Glory-VariableFont_wght.ttf);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +18,7 @@
 
 body {
     background-color: #8f6ebe;
-    font-family: "Glory", sans-serif;
+    font-family: glory, sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
@@ -52,7 +64,7 @@ header nav a:hover {
 }
 
 #logo {
-    font-family: "Atomic Age", system-ui;
+    font-family: atomic, system-ui;
     font-weight: 400;
     font-style: normal;
     font-size: 2rem;

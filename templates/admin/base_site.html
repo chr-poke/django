@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block extrahead %}
+{{ block.super }}
+<style>
+    @font-face
+    {
+        font-family: glory;
+        src: "{% static 'fonts/Glory-VariableFont_wght.ttf'%}";
+    }
+
+    :root {
+        --primary: #7856a9;
+        --secondary: #7856a9;
+
+        --body-bg: #eddfff;
+        --darkened-bg: #c8b4e6;
+        --header-bg: #433259;
+
+        --font-family-primary: glory, sans-serif;
+        --body-fg: #21192c;
+        --body-quiet-color: #433259;
+        --header-color: #eddfff;
+
+        --border-color: #433259;
+        --link-fg: #433259;
+        --link-hover-color: #7856a9;
+        --link-selected-fg: #7856a9;
+
+        --breadcrumbs-bg: #8f6ebe;
+        --breadcrumbs-fg: #eddfff;
+        --breadcrumbs-link-fg: #ffffff;
+        --selected-row: #ad94d1;
+        --hairline-color: #433259;
+        --object-tools-hover-bg: #7856a9;
+        --object-tools-bg: #433259;
+        --selected-bg: #ad94d1;
+        --button-hover-bg: #7856a9;
+        --default-button-bg: #433259;
+        --accent: #eddfff;
+        --message-error-bg: #ad2f2f;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'imagini/favicon.png' %}" style="height: 40px; vertical-align: middle;">
+        {{ site_header }}
+    </a>
+</h1>
+{% endblock %}
